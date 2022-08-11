@@ -1,4 +1,4 @@
-use crate::lib::agent::find_agent;
+use crate::lib::agent::AgentExecutor;
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -52,10 +52,10 @@ pub struct NiApp {
 }
 
 pub fn run_ni(app: NiApp) -> anyhow::Result<()> {
-    let agent = find_agent()?;
+    let agent = AgentExecutor::find()?;
 
     if let Some(package) = app.package {
-        println!("Add package not done yet {}", package);
+        agent.add(package)?;
     } else {
         if app.frozen {
             agent.install_frozen()?;

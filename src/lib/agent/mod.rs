@@ -1,19 +1,18 @@
+#[allow(unused)]
 pub mod pnpm;
+mod utils;
 pub mod yarn;
 
-use self::pnpm::PNPM_AGENT;
-use self::yarn::YARN_AGENT;
-
-use crate::lib::cli::ni::NiApp;
+use crate::lib::agent::pnpm::AgentPnpm;
+use crate::lib::agent::utils::prompt_agent;
+use crate::lib::agent::yarn::AgentYarn;
 use crate::lib::exec;
-use crate::lib::fs_utils::find_file_up;
-use anyhow::Error;
+use anyhow::{anyhow, Context};
 use std::env;
-use std::io::{BufRead, BufReader};
-use std::path::PathBuf;
-use std::process::Stdio;
-use subprocess::Exec;
+use std::path::{Path, PathBuf};
+use subprocess::ExitStatus;
 
+#[allow(unused)]
 #[derive(Debug)]
 pub struct AgentCmd {
     agent: &'static str,
@@ -29,6 +28,7 @@ pub struct AgentCmd {
     global_uninstall: &'static str,
 }
 
+#[allow(unused)]
 #[derive(Debug)]
 pub struct AgentOpt {
     lock_file: &'static str,
@@ -36,50 +36,36 @@ pub struct AgentOpt {
     commands: AgentCmd,
 }
 
+#[allow(unused)]
 pub struct AgentExecutor {
     path: PathBuf,
-    inner: &'static dyn Agent,
     opt: &'static AgentOpt,
 }
 
 impl AgentExecutor {
-    pub fn install(&self) -> anyhow::Result<()> {
-        exec::run(self.opt.commands.install.replace("{0}", "").trim())?;
+    pub fn find() -> anyhow::Result<AgentExecutor> {
+        let cur_dir = env::current_dir()?;
 
-        Ok(())
+        AgentYarn::find(&cur_dir)
+            .or_else(|| AgentPnpm::find(&cur_dir))
+            .or_else(|| prompt_agent(cur_dir))
+            .context(anyhow!("Could not find a valid agent to run the command"))
     }
 
-    pub fn install_frozen(&self) -> anyhow::Result<()> {
-        exec::run(self.opt.commands.frozen.replace("{0}", "").trim())?;
+    pub fn install(&self) -> anyhow::Result<ExitStatus> {
+        exec::run(self.opt.commands.install.replace("{0}", "").trim())
+    }
 
-        Ok(())
+    pub fn install_frozen(&self) -> anyhow::Result<ExitStatus> {
+        exec::run(self.opt.commands.frozen.replace("{0}", "").trim())
+    }
+
+    pub fn add(&self, pkg: String) -> anyhow::Result<ExitStatus> {
+        exec::run(self.opt.commands.add.replace("{0}", &pkg).trim())
     }
 }
 
-pub trait Agent {
-    fn opt(&self) -> &AgentOpt;
-}
-
-pub fn find_agent() -> anyhow::Result<AgentExecutor> {
-    let path = env::current_dir()?;
-
-    if let Some(_) = match_agent(&path, &YARN_AGENT) {
-        return Ok(AgentExecutor {
-            path,
-            inner: &YARN_AGENT,
-            opt: YARN_AGENT.opt(),
-        });
-    } else if let Some(_) = match_agent(&path, &PNPM_AGENT) {
-        return Ok(AgentExecutor {
-            path,
-            inner: &PNPM_AGENT,
-            opt: PNPM_AGENT.opt(),
-        });
-    }
-
-    anyhow::bail!("Do not care")
-}
-
-fn match_agent(path: &PathBuf, x: &'static dyn Agent) -> Option<PathBuf> {
-    find_file_up(&path, x.opt().lock_file)
+trait Agent {
+    fn make(path: PathBuf) -> AgentExecutor;
+    fn find(path: &Path) -> Option<AgentExecutor>;
 }

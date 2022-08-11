@@ -1,0 +1,9 @@
+{
+  "name": "fixtures_npm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "is-number": "^7.0.0"
+  }
+}

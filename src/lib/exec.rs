@@ -9,5 +9,5 @@ pub(crate) fn run(cmd: &str) -> anyhow::Result<ExitStatus> {
         println!("Oh no");
     }
 
-    return Ok(stream);
+    Ok(stream)
 }

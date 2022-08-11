@@ -6,15 +6,20 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.58"
-clap = { version = "3.2.12", features = ["derive"] }
+anyhow = "1.0.61"
+clap = { version = "3.2.16", features = ["derive"] }
+dialoguer = { version = "0.10.2", default-features = false, features = ["completion"]  }
 subprocess = "0.2.9"
 
+[dev-dependencies]
+assert_cmd = "2.0.4"
+predicates = "2.1.1"
+
 [profile.release]
-lto = "fat"
+lto = true
 panic = "abort"
-strip = true
-opt-level = "z"  # Optimize for size.
+#strip = true
+opt-level = "s"  # Optimize for size.
 codegen-units = 1
 
 # cargo +nightly build -Z build-std=std,panic_abort --target x86_64-unknown-linux-gnu --release
