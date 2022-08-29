@@ -37,6 +37,7 @@ pub struct AgentOpt {
 }
 
 #[allow(unused)]
+#[derive(Debug)]
 pub struct AgentExecutor {
     path: PathBuf,
     opt: &'static AgentOpt,
@@ -60,8 +61,29 @@ impl AgentExecutor {
         exec::run(self.opt.commands.frozen.replace("{0}", "").trim())
     }
 
-    pub fn add(&self, pkg: String) -> anyhow::Result<ExitStatus> {
-        exec::run(self.opt.commands.add.replace("{0}", &pkg).trim())
+    pub fn add(
+        &self,
+        pkg: String,
+        dev: bool,
+        peer: bool,
+        optional: bool,
+    ) -> anyhow::Result<ExitStatus> {
+        let mut c: Vec<&str> = vec![];
+        if dev {
+            c.push("--save-optional");
+        }
+        if peer {
+            c.push("--save-peer");
+        }
+        if optional {
+            c.push("--save-optional");
+        }
+
+        c.push(&pkg);
+
+        let string = c.join(" ");
+        println!("cmd{}", &string);
+        exec::run(self.opt.commands.add.replace("{0}", &string).trim())
     }
 }
 
