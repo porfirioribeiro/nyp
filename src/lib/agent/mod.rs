@@ -12,6 +12,8 @@ use std::env;
 use std::path::{Path, PathBuf};
 use subprocess::ExitStatus;
 
+use self::utils::PkgDirectories;
+
 #[allow(unused)]
 #[derive(Debug)]
 pub struct AgentCmd {
@@ -88,6 +90,6 @@ impl AgentExecutor {
 }
 
 trait Agent {
-    fn make(path: PathBuf) -> AgentExecutor;
+    fn make(path: PkgDirectories) -> AgentExecutor;
     fn find(path: &Path) -> Option<AgentExecutor>;
 }

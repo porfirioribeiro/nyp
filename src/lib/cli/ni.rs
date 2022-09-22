@@ -54,8 +54,6 @@ pub struct NiApp {
 pub fn run_ni(app: NiApp) -> anyhow::Result<()> {
     let agent = AgentExecutor::find()?;
 
-    dbg!(&app);
-
     if let Some(package) = app.package {
         agent.add(package, app.dev, app.peer, app.optional)?;
     } else {

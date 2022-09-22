@@ -1,4 +1,4 @@
-use super::{Agent, AgentCmd, AgentOpt};
+use super::{utils::PkgDirectories, Agent, AgentCmd, AgentOpt};
 use crate::lib::agent::utils::match_agent;
 use crate::lib::agent::AgentExecutor;
 use std::path::{Path, PathBuf};
@@ -26,9 +26,9 @@ static PNPM_AGENT_OPT: AgentOpt = AgentOpt {
 };
 
 impl Agent for AgentPnpm {
-    fn make(path: PathBuf) -> AgentExecutor {
+    fn make(path: PkgDirectories) -> AgentExecutor {
         AgentExecutor {
-            path,
+            path: path.lock,
             opt: &PNPM_AGENT_OPT,
         }
     }

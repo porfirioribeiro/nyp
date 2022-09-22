@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.64"
-clap = { version = "3.2.20", features = ["derive"] }
+anyhow = "1.0.65"
+clap = { version = "3.2.22", features = ["derive"] }
 dialoguer = { version = "0.10.2", default-features = false, features = ["completion"]  }
 subprocess = "0.2.9"
 
@@ -22,4 +22,5 @@ panic = "abort"
 opt-level = "s"  # Optimize for size.
 codegen-units = 1
 
-# cargo +nightly build -Z build-std=std,panic_abort --target x86_64-unknown-linux-gnu --release
+# cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu --release
+# cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target $target

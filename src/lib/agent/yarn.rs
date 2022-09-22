@@ -1,4 +1,4 @@
-use super::{Agent, AgentCmd, AgentOpt};
+use super::{utils::PkgDirectories, Agent, AgentCmd, AgentOpt};
 use crate::lib::agent::utils::match_agent;
 use crate::lib::agent::AgentExecutor;
 use std::path::{Path, PathBuf};
@@ -24,9 +24,9 @@ pub static YARN_AGENT_OPT: AgentOpt = AgentOpt {
 };
 
 impl Agent for AgentYarn {
-    fn make(path: PathBuf) -> AgentExecutor {
+    fn make(path: PkgDirectories) -> AgentExecutor {
         AgentExecutor {
-            path,
+            path: path.lock,
             opt: &YARN_AGENT_OPT,
         }
     }

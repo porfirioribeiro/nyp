@@ -1,6 +1,7 @@
 use crate::lib::agent::pnpm::AgentPnpm;
 use crate::lib::agent::yarn::AgentYarn;
 use crate::lib::agent::{Agent, AgentExecutor, AgentOpt};
+use crate::lib::exit::Expected;
 use dialoguer::console::style;
 use dialoguer::{theme::ColorfulTheme, Select};
 use std::path::{Path, PathBuf};
@@ -22,21 +23,27 @@ pub fn prompt_agent(cur_dir: PathBuf) -> Option<AgentExecutor> {
         .items(&selections[..])
         .interact();
 
+    let path = PkgDirectories {
+        lock: cur_dir.clone(),
+        pkg: cur_dir,
+    };
+
     match selection {
-        Ok(1) => Some(AgentYarn::make(cur_dir)),
-        Ok(2) => Some(AgentPnpm::make(cur_dir)),
+        Ok(1) => Some(AgentYarn::make(path)),
+        Ok(2) => Some(AgentPnpm::make(path)),
         _ => None,
     }
 }
 
-pub fn match_agent(path: &Path, x: &AgentOpt) -> Option<PathBuf> {
-    find_file_up(path, x.lock_file).and_then(|s| s.parent().map(|p| p.to_path_buf()))
+pub struct PkgDirectories {
+    pub lock: PathBuf,
+    pub pkg: PathBuf,
 }
 
-pub fn find_file_up(starting_directory: &Path, lock_file_name: &str) -> Option<PathBuf> {
+pub fn match_agent(starting_directory: &Path, x: &AgentOpt) -> Option<PkgDirectories> {
     let mut path: PathBuf = starting_directory.into();
     let pkg_file = Path::new("package.json");
-    let lock_file = Path::new(lock_file_name);
+    let lock_file = Path::new(x.lock_file);
 
     println!("find_file_up: {:?} {:?}", &path, &lock_file);
 
@@ -57,7 +64,12 @@ pub fn find_file_up(starting_directory: &Path, lock_file_name: &str) -> Option<P
         if path.is_file() {
             println!("loop:lock: {:?} {:?}", &path, &pkg_path);
 
-            break Some(path);
+            let pkg_dir = pkg_path.or_die("found lock file without package.json");
+
+            break Some(PkgDirectories {
+                lock: path.parent()?.to_path_buf(),
+                pkg: pkg_dir.parent()?.to_path_buf(),
+            });
         }
 
         // remove file && remove parent
