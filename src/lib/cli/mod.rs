@@ -1,5 +1,5 @@
 use crate::lib::cli::ni::NiApp;
-use clap::{App, ArgMatches, Command, FromArgMatches, Subcommand};
+use clap::{ArgMatches, Command, FromArgMatches, Subcommand};
 
 pub mod ni;
 
@@ -13,7 +13,7 @@ pub fn parse_cli() -> Apps {
                 .subcommand_help_heading("APPS"),
         ));
 
-    let cli: App = Apps::augment_subcommands(cmd);
+    let cli: Command = Apps::augment_subcommands(cmd);
 
     let mut matches: &ArgMatches = &cli.get_matches();
 
