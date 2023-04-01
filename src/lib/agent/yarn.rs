@@ -1,7 +1,7 @@
 use super::{utils::PkgDirectories, Agent, AgentCmd, AgentOpt};
 use crate::lib::agent::utils::match_agent;
 use crate::lib::agent::AgentExecutor;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 pub struct AgentYarn;
 
