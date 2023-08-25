@@ -56,12 +56,10 @@ pub fn run_ni(app: NiApp) -> anyhow::Result<()> {
 
     if let Some(package) = app.package {
         agent.add(package, app.dev, app.peer, app.optional)?;
+    } else if app.frozen {
+        agent.install_frozen()?;
     } else {
-        if app.frozen {
-            agent.install_frozen()?;
-        } else {
-            agent.install()?;
-        }
+        agent.install()?;
     }
 
     Ok(())
