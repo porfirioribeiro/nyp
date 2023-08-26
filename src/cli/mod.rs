@@ -1,4 +1,4 @@
-use crate::lib::cli::ni::NiApp;
+use crate::cli::ni::NiApp;
 use clap::{ArgMatches, Command, FromArgMatches, Subcommand};
 
 pub mod ni;

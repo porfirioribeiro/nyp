@@ -1,10 +1,13 @@
 extern crate core;
 
-use crate::lib::cli::ni::run_ni;
-use crate::lib::cli::Apps;
-use lib::cli::parse_cli;
+pub mod agent;
+pub mod cli;
+pub mod exec;
+pub mod exit;
 
-mod lib;
+use crate::cli::ni::run_ni;
+use crate::cli::parse_cli;
+use crate::cli::Apps;
 
 fn main() -> anyhow::Result<()> {
     let apps = parse_cli();

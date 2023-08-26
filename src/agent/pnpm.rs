@@ -1,6 +1,6 @@
 use super::{utils::PkgDirectories, Agent, AgentCmd, AgentOpt};
-use crate::lib::agent::utils::match_agent;
-use crate::lib::agent::AgentExecutor;
+use crate::agent::utils::match_agent;
+use crate::agent::AgentExecutor;
 use std::path::{Path, PathBuf};
 
 pub struct AgentPnpm;

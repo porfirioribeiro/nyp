@@ -1,4 +1,4 @@
-use crate::lib::agent::AgentExecutor;
+use crate::agent::AgentExecutor;
 use clap::Parser;
 
 #[derive(Parser, Debug)]

@@ -1,7 +1,7 @@
-use crate::lib::agent::pnpm::AgentPnpm;
-use crate::lib::agent::yarn::AgentYarn;
-use crate::lib::agent::{Agent, AgentExecutor, AgentOpt};
-use crate::lib::exit::Expected;
+use crate::agent::pnpm::AgentPnpm;
+use crate::agent::yarn::AgentYarn;
+use crate::agent::{Agent, AgentExecutor, AgentOpt};
+use crate::exit::Expected;
 use dialoguer::console::style;
 use dialoguer::{theme::ColorfulTheme, Select};
 use std::path::{Path, PathBuf};
@@ -45,16 +45,16 @@ pub fn match_agent(starting_directory: &Path, x: &AgentOpt) -> Option<PkgDirecto
     let pkg_file = Path::new("package.json");
     let lock_file = Path::new(x.lock_file);
 
-    println!("find_file_up: {:?} {:?}", &path, &lock_file);
+    // println!("find_file_up: {:?} {:?}", &path, &lock_file);
 
     let mut pkg_path: Option<PathBuf> = None;
 
     loop {
-        println!("loop: {:?}", &path);
+        // println!("loop: {:?}", &path);
         path.push(pkg_file);
 
         if path.is_file() && pkg_path.is_none() {
-            println!("loop:pkg: {:?}", &path);
+            // println!("loop:pkg: {:?}", &path);
             pkg_path = Some(path.clone());
         }
         path.pop();
@@ -62,7 +62,7 @@ pub fn match_agent(starting_directory: &Path, x: &AgentOpt) -> Option<PkgDirecto
         path.push(lock_file);
 
         if path.is_file() {
-            println!("loop:lock: {:?} {:?}", &path, &pkg_path);
+            // println!("loop:lock: {:?} {:?}", &path, &pkg_path);
 
             let pkg_dir = pkg_path.or_die("found lock file without package.json");
 

@@ -3,10 +3,10 @@ pub mod pnpm;
 mod utils;
 pub mod yarn;
 
-use crate::lib::agent::pnpm::AgentPnpm;
-use crate::lib::agent::utils::prompt_agent;
-use crate::lib::agent::yarn::AgentYarn;
-use crate::lib::exec;
+use crate::agent::pnpm::AgentPnpm;
+use crate::agent::utils::prompt_agent;
+use crate::agent::yarn::AgentYarn;
+use crate::exec;
 use anyhow::{anyhow, Context};
 use std::env;
 use std::path::{Path, PathBuf};
