@@ -1,8 +1,12 @@
 use crate::agent::AgentExecutor;
 use clap::Parser;
+use clap_verbosity_flag::Verbosity;
 
 #[derive(Parser, Debug)]
 pub struct NiApp {
+    #[command(flatten)]
+    verbose: Verbosity,
+
     #[clap(
         short = 'g',
         long = "global",
@@ -52,6 +56,10 @@ pub struct NiApp {
 }
 
 pub fn run_ni(app: NiApp) -> anyhow::Result<()> {
+    env_logger::Builder::new()
+        .filter_level(app.verbose.log_level_filter())
+        .init();
+
     let agent = AgentExecutor::find()?;
 
     if let Some(package) = app.package {
