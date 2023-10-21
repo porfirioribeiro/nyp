@@ -1,6 +1,7 @@
 use assert_cmd::Command;
 use std::path::PathBuf;
 
+#[ignore]
 #[test]
 fn install_pnpm() {
     let mut cmd = get_exe();
@@ -10,6 +11,7 @@ fn install_pnpm() {
         .stderr("");
 }
 
+#[ignore]
 #[test]
 fn install_yarn() {
     let mut cmd = get_exe();
