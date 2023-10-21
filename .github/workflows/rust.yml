@@ -52,8 +52,8 @@ jobs:
             archive: zip
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: FranzDiebold/github-env-vars-action@v2.3.1
+      - uses: actions/checkout@v4
+      - uses: FranzDiebold/github-env-vars-action@v2
 
       - name: Install coreutils for macOS
         if: matrix.os == 'macos-latest'
@@ -61,7 +61,7 @@ jobs:
 
       # Cache files between builds
       - name: Setup | Cache Cargo
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
@@ -81,9 +81,6 @@ jobs:
 
       - name: Build release
         uses: actions-rs/cargo@v1
-        # TODO: Remove this once it's the default
-        env:
-          SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
         with:
           command: build
           args: --target ${{ matrix.target }} --release
@@ -112,14 +109,14 @@ jobs:
 
       - name: Upload artifacts archive
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: nyp-${{ matrix.target }}.${{ matrix.archive }}
           path: nyp-${{ matrix.target }}.${{ matrix.archive }}
 
       - name: Upload artifacts checksum
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: nyp-${{ matrix.target }}-sha256sum.txt
           path: nyp-${{ matrix.target }}-sha256sum.txt
