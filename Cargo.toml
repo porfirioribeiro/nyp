@@ -7,23 +7,27 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
-clap = { version = "4.4.3", features = ["derive"] }
+clap = { version = "4.4.6", features = ["derive"] }
 clap-verbosity-flag = "2.0.1"
-dialoguer = { version = "0.10.4", default-features = false, features = ["completion"]  }
+dialoguer = { version = "0.11.0", default-features = false, features = [
+    "completion",
+] }
 env_logger = "0.10.0"
 log = "0.4.20"
 subprocess = "0.2.9"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"
-predicates = "3.0.3"
+predicates = "3.0.4"
 
 [profile.release]
 lto = true
 panic = "abort"
-#strip = true
-opt-level = "s"  # Optimize for size.
+strip = true
+opt-level = "s"   # Optimize for size.
 codegen-units = 1
 
 # cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu --release
 # cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target $target
+
+# RUSTFLAGS="-Zlocation-detail=none" cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu --release
